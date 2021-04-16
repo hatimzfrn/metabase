@@ -14,6 +14,7 @@ import ParameterSidebar from "metabase/parameters/components/ParameterSidebar";
 import SharingSidebar from "metabase/sharing/components/SharingSidebar";
 import EmptyState from "metabase/components/EmptyState";
 
+
 import DashboardControls from "../hoc/DashboardControls";
 
 import _ from "underscore";
@@ -101,7 +102,7 @@ type Props = {
   onFullscreenChange: boolean => void,
 
   loadDashboardParams: () => void,
-
+  
   onReplaceAllDashCardVisualizationSettings: (
     dashcardId: DashCardId,
     settings: VisualizationSettings,

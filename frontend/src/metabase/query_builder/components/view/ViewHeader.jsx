@@ -26,6 +26,28 @@ import RunButtonWithTooltip from "../RunButtonWithTooltip";
 
 import StructuredQuery from "metabase-lib/lib/queries/StructuredQuery";
 
+
+function Back() {
+
+  const goBack = (e) => {
+    e.preventDefault()
+    window.history.go(-1);
+  }
+
+  return (
+    
+          <button
+            data-metabase-event="Dashboard;Back"
+            key="back"
+            className="text-brand text-bold py1 px2 rounded bg-white bg-light-hover"
+            onClick={goBack}
+          >
+            <Icon name="arrow_left" />
+          </button>
+      
+  )
+}
+
 export class ViewTitleHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -160,6 +182,7 @@ export class ViewTitleHeader extends React.Component {
                   <QuestionDescription question={question} />
                 )}
               </ViewHeading>
+              
               {showFiltersInHeading &&
                 QuestionFilters.shouldRender(this.props) && (
                   <QuestionFilters
@@ -200,8 +223,11 @@ export class ViewTitleHeader extends React.Component {
             </div>
           </div>
         )}
+        
         <div className="ml-auto flex align-center">
+        <Back/>
           {isDirty ? (
+            
             <Link
               className="text-brand text-bold py1 px2 rounded bg-white bg-light-hover"
               data-metabase-event={
@@ -213,7 +239,7 @@ export class ViewTitleHeader extends React.Component {
             >
               {t`Save`}
             </Link>
-          ) : null}
+          ) : null} 
           {QuestionFilterWidget.shouldRender(this.props) && (
             <QuestionFilterWidget
               className="hide sm-show"

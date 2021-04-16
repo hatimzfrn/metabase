@@ -31,17 +31,42 @@ import type {
 } from "metabase-types/types/Dashboard";
 import { Link } from "react-router";
 
+function Back() {
+
+  const goBack = (e) => {
+    e.preventDefault()
+    window.history.go(-1);
+  }
+
+  return (
+    
+    <Tooltip key="edit-dashboard" tooltip={t`Back`}>
+          <button
+            data-metabase-event="Dashboard;Back"
+            key="back"
+            className="Button--borderless"
+            onClick={goBack}
+          >
+            <Icon name="arrow_left" />
+          </button>
+      </Tooltip>
+  )
+}
+
+
 type Props = {
   location: LocationDescriptor,
 
   dashboard: DashboardWithCards,
   dashboardBeforeEditing: ?DashboardWithCards,
+  
 
   isAdmin: boolean,
   isEditable: boolean,
   isEditing: boolean,
   isFullscreen: boolean,
   isNightMode: boolean,
+  history: Function,
 
   refreshPeriod: ?number,
   setRefreshElapsedHook: Function,
@@ -64,12 +89,18 @@ type Props = {
   onRefreshPeriodChange: (?number) => void,
   onNightModeChange: boolean => void,
   onFullscreenChange: boolean => void,
+  
 
   onChangeLocation: string => void,
-
+  
   onSharingClick: void => void,
   onEmbeddingClick: void => void,
 };
+
+
+  
+
+
 
 type State = {
   modal: null | "parameters",
@@ -111,6 +142,8 @@ export default class DashboardHeader extends Component {
     this.props.onEditingChange(dashboard);
   }
 
+  
+
   onAddTextBox() {
     this.props.addTextDashCardToDashboard({ dashId: this.props.dashboard.id });
   }
@@ -119,6 +152,8 @@ export default class DashboardHeader extends Component {
     this.props.onEditingChange(false);
   }
 
+  
+
   onRevert() {
     this.props.fetchDashboard(
       this.props.dashboard.id,
@@ -126,16 +161,21 @@ export default class DashboardHeader extends Component {
     );
   }
 
+  
+
   async onSave() {
     await this.props.saveDashboardAndCards(this.props.dashboard.id);
     this.onDoneEditing();
   }
+
+
 
   async onCancel() {
     this.onRevert();
     this.onDoneEditing();
   }
 
+  
   getEditWarning(dashboard: DashboardWithCards) {
     if (dashboard.embedding_params) {
       const currentSlugs = Object.keys(dashboard.embedding_params);
@@ -183,6 +223,7 @@ export default class DashboardHeader extends Component {
       isFullscreen,
       isEditable,
       location,
+      history,
     } = this.props;
     const canEdit = dashboard.can_write && isEditable && !!dashboard;
 
@@ -191,8 +232,13 @@ export default class DashboardHeader extends Component {
 
     if (isFullscreen && parametersWidget) {
       buttons.push(parametersWidget);
+      
+      
     }
 
+    if (isFullscreen){
+      buttons.push(<Back/>,);
+    }
     if (isEditing) {
       buttons.push(
         <ModalWithTrigger
@@ -227,6 +273,9 @@ export default class DashboardHeader extends Component {
         </Tooltip>,
       );
 
+             
+
+
       const {
         isAddParameterPopoverOpen,
         showAddParameterPopover,
@@ -257,6 +306,7 @@ export default class DashboardHeader extends Component {
             </Popover>
           )}
         </span>,
+        
       );
 
       extraButtons.push(
@@ -269,22 +319,29 @@ export default class DashboardHeader extends Component {
           </Link>
         </Tooltip>,
       );
+      
     }
 
     if (!isFullscreen && !isEditing && canEdit) {
-      buttons.push(
-        <Tooltip key="edit-dashboard" tooltip={t`Edit dashboard`}>
-          <a
-            data-metabase-event="Dashboard;Edit"
-            key="edit"
-            className="text-brand-hover cursor-pointer"
-            onClick={() => this.handleEdit(dashboard)}
-          >
-            <Icon name="pencil" />
-          </a>
-        </Tooltip>,
-      );
-    }
+   //button back 
+    buttons.push(
+      <Back/>,
+    );
+
+    buttons.push(
+      <Tooltip key="edit-dashboard" tooltip={t`Edit dashboard`}>
+        <a
+          data-metabase-event="Dashboard;Edit"
+          key="edit"
+          className="text-brand-hover cursor-pointer"
+          onClick={() => this.handleEdit(dashboard)}
+        >
+          <Icon name="pencil" />
+        </a>
+      </Tooltip>,
+    );
+  
+  }
 
     if (!isFullscreen && !isEditing) {
       const extraButtonClassNames =
